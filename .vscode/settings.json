@@ -1,0 +1,13 @@
+{
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "workbench.colorTheme": "Dracula",
+  "workbench.iconTheme": "vs-seti",
+  "editor.formatOnSave": true,
+  "editor.renderWhitespace": "all",
+  "python.analysis.typeCheckingMode": "basic",
+  "python.formatting.autopep8Args": [
+    "--max-line-length",
+    "80",
+    "--experimental"
+  ]
+}
