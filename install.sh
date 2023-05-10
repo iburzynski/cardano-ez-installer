@@ -9,6 +9,7 @@ nix-shell -p python311 --run "
 "
 
 if [ $? -eq 0 ]; then
+  source ~/.bashrc
   echo "Cleaning up nix-store..."
   nix-collect-garbage
 fi

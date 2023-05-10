@@ -80,6 +80,13 @@ A quick and easy way to install `cardano-node` and `cardano-cli` using Nix.
 - The installation may take a long time, especially with a fresh install, so be patient! The EZ-Installer doesn't display output information while `cardano-node` and `cardano-cli` are building, to make the installation process easier to follow. If the installer is taking a while on a particular step but you don't see any errors, assume that the installation is proceeding successfully.
 - If you encounter any errors during the installation process, return to the `README` and follow the instructions to resolve them. Then run `./install.sh` again.
 
+5. **Start your node**
+
+- Once the installation completes, you can start `cardano-node` from a `bash` terminal using the alias that corresponds to the network you configured:
+  - `preprod-node` for preprod testnet
+  - `preview-node` for preview testnet
+  - `main-node` for mainnet
+
 ## **Updating `cardano-node` and `cardano-cli`**
 
 Updating `cardano-node` and `cardano-cli` is simple:
