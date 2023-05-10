@@ -5,7 +5,7 @@ from .config_vars import ConfigVars
 from .utils import ind, print_neutral, print_success, run_quiet
 
 
-def install_node(cfg: ConfigVars) -> None | NoReturn:
+def install_node(cfg: ConfigVars, is_testnet: bool) -> None | NoReturn:
     print_neutral(f"\n{ind('> Installing cardano-node...')}")
 
     os.chdir(cfg['CARDANO_SRC_PATH'])
@@ -26,8 +26,9 @@ def install_node(cfg: ConfigVars) -> None | NoReturn:
         f"Error resetting git to release {cfg['NODE_RELEASE']}")
 
     run_quiet(
-        ["nix", "build", "--accept-flake-config", f".#{cfg['NETWORK']}/node"],
-        "Error buildingcardano-node")
+        ["nix", "build", "--accept-flake-config",
+         f".#{cfg['TESTNET_NAME'] if is_testnet else 'mainnet'}/node"],
+        "Error building cardano-node")
 
     run_quiet(
         ["nix-env", "-f", ".", "-iA", "cardano-node"],

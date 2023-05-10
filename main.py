@@ -20,13 +20,15 @@ def install() -> None | NoReturn:
         print("Error: Nix is not installed on this system.")
         sys.exit(1)
     nix_conf_ready = check_nix_conf()
+
     cfg = make_cfg()
+    is_testnet = cfg['NETWORK'] == 'testnet'
+
     if nix_conf_ready:
-        install_node(cfg)
+        install_node(cfg, is_testnet)
     else:
         sys.exit(1)
 
-    is_testnet = cfg['NETWORK'] == 'testnet'
     paths = make_paths(cfg, is_testnet)
     download_node_configs(cfg, paths['config'], is_testnet)
 

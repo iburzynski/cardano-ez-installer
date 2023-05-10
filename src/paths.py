@@ -27,9 +27,9 @@ def make_paths(cfg: ConfigVars, is_testnet: bool) -> Paths:
     path_dict = {path: os.path.join(base_path, path) for path in paths}
 
     os.chdir(base_path)
-    for path in path_dict.values():
+    for path_name, path in path_dict.items():
         if not os.path.exists(path):
-            if path != 'node.socket':
+            if path_name != 'node.socket':
                 os.mkdir(path)
             else:
                 open(path, 'a').close()
