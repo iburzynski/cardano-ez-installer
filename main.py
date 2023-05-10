@@ -25,7 +25,7 @@ def install() -> None | NoReturn:
     is_testnet = cfg['NETWORK'] == 'testnet'
 
     if nix_conf_ready:
-        install_node(cfg, is_testnet)
+        install_node(cfg)
     else:
         sys.exit(1)
 
