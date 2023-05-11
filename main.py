@@ -36,7 +36,7 @@ def install() -> None | NoReturn:
     add_bashrc_alias(node_alias, paths)
 
     print_success(
-        ind(f"Installation complete. Run `{node_alias}` to start the node.\n\n"))
+        ind(f"Installation complete. Run `{node_alias}` to start the node.\n"))
 
 
 install()
