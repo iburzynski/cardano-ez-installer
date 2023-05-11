@@ -10,6 +10,11 @@ nix-shell -p python311 --run "
 
 if [ $? -eq 0 ]; then
   source ~/.bashrc
-  echo "Cleaning up nix-store..."
-  nix-collect-garbage
+  read -p "Clean up nix-store? [Y/n]" answer
+  answer=${answer:-Y}
+
+  if [[ $answer =~ ^[Yy]$ ]]
+  then
+    nix-collect-garbage -d
+  fi
 fi
