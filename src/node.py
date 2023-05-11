@@ -92,6 +92,7 @@ def download_node_configs(
         "topology",
         "alonzo-genesis",
         "byron-genesis",
+        "conway-genesis",
         "shelley-genesis",
     ]
     for file in config_files:
