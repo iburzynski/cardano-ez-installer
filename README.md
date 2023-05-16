@@ -119,6 +119,14 @@ If you intend to primarily use a single network and don't want to set this varia
 export CARDANO_NODE_NETWORK_ID=1
 ```
 
+Once the `CARDANO_NODE_NETWORK_ID` variable is set, you'll be able to run any `cardano-cli` command and interact with your running node.
+
+To check the sync progress of your node, use the following command:
+
+```sh
+cardano-cli query tip
+```
+
 ## **Updating `cardano-node` and `cardano-cli`**
 
 Updating `cardano-node` and `cardano-cli` is simple:
