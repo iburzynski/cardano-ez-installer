@@ -7,8 +7,8 @@ from .utils import ind, print_neutral, print_success
 
 
 def update_dotfiles(paths: Paths) -> None | NoReturn:
-    dotfiles = ['.bash_profile', '.zprofile'] if platform.system() == 'Darwin' else [
-        '.bashrc']
+    dotfiles = ['.bash_profile', '.bashrc', '.zprofile',
+                '.zshrc'] if platform.system() == 'Darwin' else ['.bashrc']
 
     def make_alias(net: Network) -> tuple[str, str]:
         node_alias = f"{'main' if net.value == 'mainnet' else net.value}-node"

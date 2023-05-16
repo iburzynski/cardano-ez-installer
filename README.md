@@ -11,6 +11,8 @@ A quick and easy way to install `cardano-node` and `cardano-cli` using Nix.
   - `bash` (Linux & MacOS)
   - `zsh` (MacOS)
 
+  The installer configures the node and cli to work with MacOS in both login and interactive shells.
+  
   If you wish to use a different shell you'll need to manually configure the necessary aliases and `CARDANO_NODE_SOCKET_PATH` export in the associated dotfile.
 
 1. **Install `nix`**
@@ -110,7 +112,7 @@ For `mainnet`:
 CARDANO_NODE_NETWORK_ID=mainnet
 ```
 
-If you intend to primarily use a single network and don't want to set this variable every time you use `cardano-cli`, you can export this variable in the appropriate dotfile (`~/.bashrc` for Linux, `~/.bash_profile`/`~/.zprofile` for MacOS), for example:
+If you intend to primarily use a single network and don't want to set this variable every time you use `cardano-cli`, you can export this variable in the appropriate dotfile (`~/.bashrc` for Linux, `~/.bash_profile`/`~/.zprofile` for MacOS in login shell sessions, `~/.bashrc`/`~/.zshrc` for MacOS in interactive shell sessions), for example:
 
 ```sh
 # ~./bashrc
