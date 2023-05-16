@@ -8,12 +8,11 @@ from .utils import ind, print_fail, print_neutral, print_success
 
 
 ConfigVars = TypedDict('ConfigVars', {
-    'NETWORK': str,
-    'NETWORK_MAGIC': str,
+    # 'CARDANO_NODE_NETWORK_ID': str,
     'NODE_RELEASE': str,
     'CARDANO_PATH': str,
     'CARDANO_SRC_PATH': str,
-    'TESTNET_NAME': str
+    # 'NETWORK_NAME': str
 })
 
 
@@ -28,15 +27,9 @@ def get_var(var: str, validate: Callable[[str],
 
 
 def check_network_var(val: str) -> str | None:
-    passed = val in ['mainnet', 'testnet']
+    passed = val in ['mainnet', '1', '2']
 
-    return None if passed else "value must be \"mainnet\" or \"testnet\"."
-
-
-def check_network_magic_var(val: str) -> str | None:
-    passed = int(val) in [1, 2]
-
-    return None if passed else "value must be 1 or 2."
+    return None if passed else "value must be 1, 2, or mainnet."
 
 
 def check_node_release_var(val: str) -> str | None:
@@ -69,12 +62,16 @@ def check_path_var(val: str) -> str | None:
 def make_cfg() -> ConfigVars | NoReturn:
     print_neutral(f'\n{ind("> Checking .env variables...")}')
     var_checks = {
-        'NETWORK': check_network_var,
-        'NETWORK_MAGIC': check_network_magic_var,
+        # 'CARDANO_NODE_NETWORK_ID': check_network_var,
         'NODE_RELEASE': check_node_release_var,
         'CARDANO_SRC_PATH': check_path_var,
         'CARDANO_PATH': check_path_var,
     }
+    # network_names = {
+    # "1": "preprod",
+    # "2": "preview",
+    # "mainnet": "mainnet"
+    # }
     cfg = {}
     all_valid = True
     for var, validate in var_checks.items():
@@ -91,14 +88,12 @@ def make_cfg() -> ConfigVars | NoReturn:
             f'\n{ind(".env variables error: correct the issue(s) above and try again (See README for help).")}\n')
         sys.exit(1)
 
-    cfg['TESTNET_NAME'] = 'preprod' if int(
-        cfg['NETWORK_MAGIC']) == 1 else 'preview'
+    # cfg['NETWORK_NAME'] = network_names[cfg['CARDANO_NODE_NETWORK_ID']]
 
     return {
-        'NETWORK': cfg['NETWORK'],
-        'NETWORK_MAGIC': cfg['NETWORK_MAGIC'],
+        # 'CARDANO_NODE_NETWORK_ID': cfg['CARDANO_NODE_NETWORK_ID'],
         'NODE_RELEASE': cfg['NODE_RELEASE'],
         'CARDANO_PATH': cfg['CARDANO_PATH'],
         'CARDANO_SRC_PATH': cfg['CARDANO_SRC_PATH'],
-        'TESTNET_NAME': cfg['TESTNET_NAME']
+        # 'NETWORK_NAME': cfg['NETWORK_NAME']
     }

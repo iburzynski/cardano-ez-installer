@@ -1,40 +1,68 @@
 import os
-from typing import TypedDict
+from enum import Enum
+from typing import NoReturn, TypedDict
 from .config_vars import ConfigVars
 
-Paths = TypedDict('Paths', {
+
+class Network(Enum):
+    PREPROD = 'preprod'
+    PREVIEW = 'preview'
+    MAINNET = 'mainnet'
+
+
+class Subdir(Enum):
+    CONFIG = 'config'
+    DB = 'db'
+
+
+SubdirPaths = TypedDict('SubdirPaths', {
     'config': str,
     'db': str,
-    'node.socket': str
 })
 
 
-def make_paths(cfg: ConfigVars, is_testnet: bool) -> Paths:
-    network_base_path = os.path.join(cfg['CARDANO_PATH'], cfg['NETWORK'])
+class NetworkPaths():
+    network: str
+    path: str
+    config: str
+    db: str
 
-    if not os.path.exists(network_base_path):
-        os.mkdir(network_base_path)
+    def __init__(self, cardano_path: str, network: Network):
+        self.network = network.value
+        self.path = os.path.join(cardano_path, self.network)
+        for subdir in Subdir:
+            setattr(self, subdir.value, os.path.join(self.path, subdir.value))
 
-    paths = ['config', 'node.socket', 'db']
-    if is_testnet:
-        testnet_base_path = os.path.join(network_base_path, cfg['TESTNET_NAME'])
-        base_path = testnet_base_path
-        if not os.path.exists(testnet_base_path):
-            os.mkdir(testnet_base_path)
-    else:
-        base_path = network_base_path
 
-    path_dict = {path: os.path.join(base_path, path) for path in paths}
+class Paths():
+    preprod: NetworkPaths
+    preview: NetworkPaths
+    mainnet: NetworkPaths
+    socket: str
 
-    os.chdir(base_path)
-    for path_name, path in path_dict.items():
-        if not os.path.exists(path):
-            if path_name != 'node.socket':
-                os.mkdir(path)
-            else:
-                open(path, 'a').close()
+    def __init__(self, cardano_path: str):
+        for net in Network:
+            setattr(self, net.value, NetworkPaths(cardano_path, net))
+        self.socket = os.path.join(cardano_path, 'node.socket')
 
-    return {
-        'config': path_dict['config'],
-        'db': path_dict['db'],
-        'node.socket': path_dict['node.socket']}
+    def make_paths(self) -> None | NoReturn:
+        for net in Network:
+            nps: NetworkPaths = getattr(self, net.value)
+
+            if not os.path.exists(nps.path):
+                os.mkdir(nps.path)
+
+            os.chdir(nps.path)
+            for subdir in Subdir:
+                path = getattr(nps, subdir.value)
+                if not os.path.exists(path):
+                    os.mkdir(path)
+
+        # Create node.socket
+        open(self.socket, 'a').close()
+
+
+def make_paths(cfg: ConfigVars) -> Paths | NoReturn:
+    paths: Paths = Paths(cfg['CARDANO_PATH'])
+    paths.make_paths()
+    return paths

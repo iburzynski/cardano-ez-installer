@@ -3,6 +3,7 @@ from typing import NoReturn
 
 from .config_vars import ConfigVars
 from .utils import ind, print_neutral, print_success, run_quiet
+from .paths import Network, NetworkPaths, Paths
 
 
 def install_node(cfg: ConfigVars) -> None | NoReturn:
@@ -81,10 +82,9 @@ defaultNix // defaultNix.packages.${system} // {
 
 
 def download_node_configs(
-        cfg: ConfigVars, configs_path: str, is_testnet: bool) -> None | NoReturn:
+        paths: Paths) -> None | NoReturn:
     print_neutral(ind("> Downloading node config files..."))
-    os.chdir(configs_path)
-    config_src = f"https://book.world.dev.cardano.org/environments/{cfg['TESTNET_NAME'] if is_testnet else 'mainnet'}"
+    networks = ['mainnet', 'preprod', 'preview']
     config_files = [
         "config",
         "db-sync-config",
@@ -95,8 +95,15 @@ def download_node_configs(
         "conway-genesis",
         "shelley-genesis",
     ]
-    for file in config_files:
-        run_quiet(
-            ["curl", "-O", "-J", f"{config_src}/{file}.json"],
-            f"Error downloading '{file}.json'")
+    for net in Network:
+        network_paths: NetworkPaths = getattr(paths, net.value)
+        config_path = network_paths.config
+        os.chdir(config_path)
+        config_src = f"https://book.world.dev.cardano.org/environments/{net.value}"
+
+        for file in config_files:
+            run_quiet(
+                ["curl", "-O", "-J", f"{config_src}/{file}.json"],
+                f"Error downloading '{file}.json'")
+
     print_success(ind("> node config files: SUCCESS\n"))
