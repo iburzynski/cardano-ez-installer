@@ -90,45 +90,80 @@ A quick and easy way to install `cardano-node` and `cardano-cli` using Nix.
   - `preprod-node` for preprod testnet
   - `preview-node` for preview testnet
   - `main-node` for mainnet
+  
+- When you are finished using the node, make sure to properly close the node connection by typing `CTRL + c` in the terminal session where it's running. 
 
+  >**NOTE:** If you close the terminal without doing this, the socket will remain open and you won't be able to start the node again unless you manually kill the associated process or restart your system!
+
+***
 ## **Using `cardano-cli`**
+**[Cardano CLI Guru](https://github.com/iburzynski/cardano-cli-guru)** is a companion project that provides numerous conveniences for working with `cardano-cli`, including:
+* Many pre-written utility scripts to easily execute common `cardano-cli` commands
+* Management of local environment variables via `direnv`, making it easy to switch networks and manage file inputs/outputs without polluting your dotfiles (like `~/.bashrc`) with additional variables
+* A guided tutorial to teach you how to construct and submit various types of transactions
 
-To use `cardano-cli`, first start the node using the alias for the network you're working with.
+If you don't want to use the Guru, you can follow the instructions below to use `cardano-cli`. This will require setting the `CARDANO_NODE_NETWORK_ID` environment variable manually, as well as writing more verbose commands.
 
-Then open a new terminal window. You'll need to set the `CARDANO_NODE_NETWORK_ID` variable in this terminal session to tell `cardano-cli` which network you're using.
+1. Start the node using the alias for the network you're working with.
+  * Allow the node a little time to boot up and start synchronizing before proceeding.
+  * It's normal for the node to encounter occasional errors, which it will recover from and continue running. To tell if your node is working properly, look for `Chain extended` log entries with the following format:
 
-For `preprod` testnet:
-```sh
-CARDANO_NODE_NETWORK_ID=1
-```
+    ```sh
+    Chain extended, new tip: c472036b83c119b875e3fc230435b741598677ffa45ea3ad8ad9cda3f70a872d at slot 12227931
+    ```
 
-For `preview` testnet:
-```sh
-CARDANO_NODE_NETWORK_ID=2
-```
+2. Open a new terminal window. You'll need to set the `CARDANO_NODE_NETWORK_ID` variable in this terminal session to tell `cardano-cli` which network you're using.
 
-For `mainnet`:
-```sh
-CARDANO_NODE_NETWORK_ID=mainnet
-```
+  * For `preprod` testnet:
 
-If you intend to primarily use a single network and don't want to set this variable every time you use `cardano-cli`, you can export this variable in the appropriate dotfile (`~/.bashrc` for Linux, `~/.bash_profile`/`~/.zprofile` for MacOS in login shell sessions, `~/.bashrc`/`~/.zshrc` for MacOS in interactive shell sessions), for example:
+    ```sh
+    CARDANO_NODE_NETWORK_ID=1
+    ```
 
-```sh
-# ~./bashrc
+  * For `preview` testnet:
 
-# add this to use preprod testnet:
-export CARDANO_NODE_NETWORK_ID=1
-```
+    ```sh
+    CARDANO_NODE_NETWORK_ID=2
+    ```
 
-Once the `CARDANO_NODE_NETWORK_ID` variable is set, you'll be able to run any `cardano-cli` command and interact with your running node.
+  * For `mainnet`:
 
-To check the sync progress of your node, use the following command:
+    ```sh
+    CARDANO_NODE_NETWORK_ID=mainnet
+    ```
 
-```sh
-cardano-cli query tip
-```
+    >**NOTE:** If you intend to primarily use a single network and don't want to set this variable every time you use `cardano-cli`, you can export this variable in the appropriate dotfile (`~/.bashrc` for Linux, `~/.bash_profile`/`~/.zprofile` for MacOS in login shell sessions, `~/.bashrc`/`~/.zshrc` for MacOS in interactive shell sessions), for example:
 
+    ```sh
+    # ~./bashrc
+
+    # add this to use preprod testnet:
+    export CARDANO_NODE_NETWORK_ID=1
+    ```
+
+  * Once the `CARDANO_NODE_NETWORK_ID` variable is set, you'll be able to run any `cardano-cli` command and interact with your running node.
+
+3. Run the `cardano-cli query tip` command and wait for sync.
+  * This will confirm that your node and `cardano-cli` are working properly and show the synchronization progress.
+  * You should see output informing you of the current slot number and the percentage that your node is synced.
+
+    ```sh
+    $ cardano-cli query tip
+    
+    {
+        "block": 546242,
+        "epoch": 141,
+        "era": "Babbage",
+        "hash": "7ee471e26ed927ae463d386cdd322fd7f3afb18d0fef462255ce2a2f221d7112",
+        "slot": 12227857,
+        "syncProgress": "100.00"
+    }
+    ```
+  * Once your node is 100% synced you can begin using other `cardano-cli` commands to interact with the blockchain.
+
+  >**NOTE:** when you're finished, remember to close the node connection by typing `CTRL + c` in the terminal session where it's running. 
+
+***
 ## **Updating `cardano-node` and `cardano-cli`**
 
 Updating `cardano-node` and `cardano-cli` is simple:
