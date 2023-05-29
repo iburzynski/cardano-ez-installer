@@ -1,4 +1,5 @@
 import os
+import subprocess
 from typing import NoReturn
 
 from .config_vars import ConfigVars
@@ -26,9 +27,14 @@ def install_node(cfg: ConfigVars) -> None | NoReturn:
         ["git", "reset", "--hard", cfg['NODE_RELEASE']],
         f"Error resetting git to release {cfg['NODE_RELEASE']}")
 
-    run_quiet(
-        ["nix", "build", "--accept-flake-config", ".#cardano-node"],
-        "Error building cardano-node")
+    # run_quiet(
+    #     ["nix", "build", "--accept-flake-config", ".#cardano-node"],
+    #     "Error building cardano-node")
+    subprocess.run(
+        ["nix", "build", "--accept-flake-config", "--extra-substituters",
+         "https://cache.zw3rk.com", "--extra-trusted-public-keys",
+         "loony-tools:pr9m4BkM/5/eSTZlkQyRt57Jz7OMBxNSUiMC4FkcNfk=",
+         ".#cardano-node"])
 
     # Patch broken default.nix in 8.0.0 release
     if cfg["NODE_RELEASE"] == '8.0.0':
@@ -70,9 +76,11 @@ defaultNix // defaultNix.packages.${system} // {
 
     print_neutral(ind("> Installing cardano-cli..."))
 
-    run_quiet(
-        ["nix", "build", "--accept-flake-config", ".#cardano-cli"],
-        "Error building cardano-cli")
+    subprocess.run(
+        ["nix", "build", "--accept-flake-config", "--extra-substituters",
+         "https://cache.zw3rk.com", "--extra-trusted-public-keys",
+         "loony-tools:pr9m4BkM/5/eSTZlkQyRt57Jz7OMBxNSUiMC4FkcNfk=",
+         "--no-warn-dirty", ".#cardano-cli"])
 
     run_quiet(
         ["nix-env", "-f", ".", "-iA", "cardano-cli"],
@@ -84,7 +92,6 @@ defaultNix // defaultNix.packages.${system} // {
 def download_node_configs(
         paths: Paths) -> None | NoReturn:
     print_neutral(ind("> Downloading node config files..."))
-    networks = ['mainnet', 'preprod', 'preview']
     config_files = [
         "config",
         "db-sync-config",

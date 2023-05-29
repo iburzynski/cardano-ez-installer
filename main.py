@@ -33,7 +33,7 @@ def install() -> None | NoReturn:
     update_dotfiles(paths)
 
     print_success(ind(
-        f"Installation complete!\nRun `preprod-node`, `preview-node`, or `main-node` in a new terminal window to start the node.\n"))
+        f"Installation complete!\n  Run `preprod-node`, `preview-node`, or `main-node` in a new terminal window to start the node.\n"))
 
 
 install()
