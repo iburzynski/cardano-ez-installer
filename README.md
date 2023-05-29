@@ -39,10 +39,6 @@ A quick and easy way to install `cardano-node` and `cardano-cli` using Nix.
 
   # Step 2b: Add your username to trusted-users (also include 'root' to prevent overriding default setting)
   trusted-users = root your-username
-  
-  # Step 2c: Add zw3rk binary cache (add to existing substituters/trusted-public-keys if already present)
-  substituters = https://cache.zw3rk.com
-  trusted-public-keys = loony-tools:pr9m4BkM/5/eSTZlkQyRt57Jz7OMBxNSUiMC4FkcNfk=
   ```
 
   **Step 2c** is a temporary measure due to some critical binaries like GHC being missing from IOG's official cache. Without these additions to `nix.conf` Nix will attempt to build these dependencies from source, causing the installation to take an extraordinarily long time and potentially fail!
