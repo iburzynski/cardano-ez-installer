@@ -9,7 +9,6 @@ nix-shell -p python311 --run "
 "
 
 if [ $? -eq 0 ]; then
-  source ~/.bashrc
   read -p "Clean up nix-store? [Y/n]" answer
   answer=${answer:-Y}
 
