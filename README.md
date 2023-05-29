@@ -41,8 +41,6 @@ A quick and easy way to install `cardano-node` and `cardano-cli` using Nix.
   trusted-users = root your-username
   ```
 
-  **Step 2c** is a temporary measure due to some critical binaries like GHC being missing from IOG's official cache. Without these additions to `nix.conf` Nix will attempt to build these dependencies from source, causing the installation to take an extraordinarily long time and potentially fail!
-
   **🚨 IMPORTANT!** You must restart the `nix-daemon` to apply the changes
 
   **Linux:**
