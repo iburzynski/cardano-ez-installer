@@ -59,7 +59,8 @@ class Paths():
                     os.mkdir(path)
 
         # Create node.socket
-        open(self.socket, 'a').close()
+        if not os.path.exists(self.socket):
+            open(self.socket, 'a').close()
 
 
 def make_paths(cfg: ConfigVars) -> Paths | NoReturn:
