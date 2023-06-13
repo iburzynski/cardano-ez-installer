@@ -2,6 +2,13 @@ import subprocess
 import sys
 
 
+def run(cmd: list[str], err: str) -> None:
+    result = subprocess.run(cmd)
+    if result.returncode != 0:
+        print_fail(ind2(f"{err}: {result.stderr.decode().strip()}"))
+        sys.exit(1)
+
+
 def run_quiet(cmd: list[str], err: str) -> None:
     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if result.returncode != 0:
