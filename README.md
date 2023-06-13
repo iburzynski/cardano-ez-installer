@@ -164,3 +164,29 @@ Updating `cardano-node` and `cardano-cli` is simple:
 
 - Change the version number for the `NODE_RELEASE` variable in `.env`.
 - Run `./install.sh` to update.
+
+***
+## **Troubleshooting**
+
+#### **This section is under construction...**
+Additional issues and solutions will be documented here as they're encountered during public testing.
+
+**Nix stops working after updating Mac OS**  
+Nix installation on Macs appends a code snippet to `/etc/zshrc` and `/etc/bashrc`, which is required for Nix to work properly with `zsh` and `bash` shells. Unfortunately one or both of these additions may be erased after updating your Mac.
+
+This will break:
+ * all Nix commands
+ * any Jambhala commands that use Nix under the hood
+ * if you installed `cardano-node`/`cardano-cli` using Nix (i.e. via **Cardano EZ-Installer**), the `cardano-node`/`cardano-cli` commands and associated aliases to start the node
+
+To resolve the issue, edit `/etc/zshrc` and `/etc/bashrc`, adding the following snippet to the bottom of each file if it's missing:
+
+```sh
+# Nix
+if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+  . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+fi
+# End Nix
+```
+
+>**NOTE:** you must restart the shell for the changes to take effect.
