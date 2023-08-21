@@ -11,7 +11,7 @@ daemon_path = "'/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'"
 daemon_snippet_lines = [
     "# Nix\n",
     f"[ -e {daemon_path} ] && . {daemon_path}" + "\n",
-    "# End Nix\n\n"]
+    "# End Nix\n"]
 
 
 def overwrite_dotfile_safely(dotfile_path: str, new_content: list[str]):
@@ -80,7 +80,7 @@ def update_dotfiles(paths: Paths) -> None | NoReturn:
             ] + common_content
             # Add Nix daemon failsafe to user dotfiles on darwin
             # (Prevents breakage of Nix from MacOS system updates)
-            darwin_content = daemon_snippet_lines + [
+            darwin_content = [*daemon_snippet_lines, "\n"] + [
                 line for line in lines
                 if
                 not is_alias_or_socket_path(line) and
