@@ -1,8 +1,8 @@
-from itertools import groupby
 import os
 import platform
 import shutil
 import tempfile
+from itertools import groupby
 from typing import Generator, NoReturn
 from .paths import Network, NetworkPaths, Paths
 from .utils import ind, print_fail, print_neutral, print_success
