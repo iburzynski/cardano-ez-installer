@@ -27,7 +27,7 @@ def overwrite_dotfile_safely(dotfile_path: str, new_content: list[str]):
 
     except Exception as e:
         print_fail(
-            f'\n{ind(f"An error occurred updating \'{dotfile_path}\': restoring original file.")}\n')
+            f'\n{ind(f"An error occurred updating {dotfile_path}: restoring original file.")}\n')
         shutil.copy2(backup_path, dotfile_path)
         raise e
 
