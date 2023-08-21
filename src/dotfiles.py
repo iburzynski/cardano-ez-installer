@@ -16,6 +16,9 @@ daemon_snippet_lines = [
 
 
 def remove_excess_newlines(lines: list[str]) -> Generator[str, None, None]:
+    """
+    Prevents accumulation of newlines in dotfiles by removing consecutive newlines in excess of 2.
+    """
     for _, group in groupby(lines, key=lambda line: line.strip() == ""):
         lines_in_group = list(group)
         if not lines_in_group[0].strip():
@@ -26,6 +29,11 @@ def remove_excess_newlines(lines: list[str]) -> Generator[str, None, None]:
 
 def overwrite_dotfile_safely(
         dotfile_path: str, new_content: list[str]) -> None | NoReturn:
+    """
+    Creates a temporary backup of a given dotfile before overwriting its contents.
+    Restores the backup if an exception occurs.
+    """
+
     temp_dir = tempfile.mkdtemp()
     filename = os.path.basename(dotfile_path)
     backup_path = os.path.join(temp_dir, f"{filename}.bak")
@@ -46,6 +54,11 @@ def overwrite_dotfile_safely(
 
 
 def update_dotfiles(paths: Paths) -> None | NoReturn:
+    """
+    Updates the contents of all target dotfiles to include cardano-node socket path and aliases.
+    Removes previous socket path and aliases if present.
+    For Mac users, adds Nix daemon failsafe code to dotfiles to prevent Nix breakage from MacOS updates.
+    """
     is_darwin = platform.system() == 'Darwin'
     dotfiles = ['.bash_profile', '.bashrc', '.zprofile',
                 '.zshrc'] if is_darwin else ['.bashrc']
