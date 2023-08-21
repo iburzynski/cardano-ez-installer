@@ -84,7 +84,7 @@ def update_dotfiles(paths: Paths) -> None | NoReturn:
                 line for line in lines
                 if
                 not is_alias_or_socket_path(line) and
-                not line.strip() in daemon_snippet_lines] + common_content
+                not line.strip() + "\n" in daemon_snippet_lines] + common_content
 
         overwrite_dotfile_safely(
             file_path, darwin_content if is_darwin else linux_content)
