@@ -1,8 +1,9 @@
+from itertools import groupby
 import os
 import platform
 import shutil
 import tempfile
-from typing import NoReturn
+from typing import Generator, NoReturn
 from .paths import Network, NetworkPaths, Paths
 from .utils import ind, print_fail, print_neutral, print_success
 
@@ -14,7 +15,17 @@ daemon_snippet_lines = [
     "# End Nix\n"]
 
 
-def overwrite_dotfile_safely(dotfile_path: str, new_content: list[str]):
+def remove_excess_newlines(lines: list[str]) -> Generator[str, None, None]:
+    for _, group in groupby(lines, key=lambda line: line.strip() == ""):
+        lines_in_group = list(group)
+        if not lines_in_group[0].strip():
+            yield "\n" if len(lines_in_group) <= 2 else ""
+        else:
+            yield "\n".join(line.strip() for line in lines_in_group) + "\n"
+
+
+def overwrite_dotfile_safely(
+        dotfile_path: str, new_content: list[str]) -> None | NoReturn:
     temp_dir = tempfile.mkdtemp()
     filename = os.path.basename(dotfile_path)
     backup_path = os.path.join(temp_dir, f"{filename}.bak")
@@ -22,7 +33,7 @@ def overwrite_dotfile_safely(dotfile_path: str, new_content: list[str]):
     try:
         shutil.copy2(dotfile_path, backup_path)
         with open(dotfile_path, 'w') as dotfile:
-            dotfile.writelines(new_content)
+            dotfile.writelines(remove_excess_newlines(new_content))
 
     except Exception as e:
         print_fail(
@@ -55,7 +66,7 @@ def update_dotfiles(paths: Paths) -> None | NoReturn:
     alias_chunks = [make_alias(net) for net in Network]
     aliases = [f"{alias}{value}" for alias, value in alias_chunks]
 
-    def is_alias_or_socket_path(line):
+    def is_alias_or_socket_path(line: str) -> bool:
         is_alias = any(line.startswith(prefix) for prefix, _ in alias_chunks)
         is_socket_path = line.startswith("export CARDANO_NODE_SOCKET_PATH")
         return is_alias or is_socket_path
