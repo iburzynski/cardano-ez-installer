@@ -19,7 +19,7 @@ cleanup_nix_store() {
 # Check if python3 command is available and Python version is 3.6 or greater
 if command -v python3 &> /dev/null &&
    python_version=$(python3 -c "import sys; print(sys.version_info.major * 10 + sys.version_info.minor)") &&
-   [[ $python_version -ge 39 ]]; then
+   [[ $python_version -ge 40 ]]; then
   run_python_script
   cleanup_nix_store
   else
