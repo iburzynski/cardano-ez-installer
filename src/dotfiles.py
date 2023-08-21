@@ -9,9 +9,9 @@ from .utils import ind, print_fail, print_neutral, print_success
 # Nix daemon failsafe for MacOS users
 daemon_path = "'/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'"
 daemon_snippet_lines = [
-    "# Nix",
-    f"[ -e {daemon_path} ] && . {daemon_path}",
-    "# End Nix\n"]
+    "# Nix\n",
+    f"[ -e {daemon_path} ] && . {daemon_path}" + "\n",
+    "# End Nix\n\n"]
 
 
 def overwrite_dotfile_safely(dotfile_path: str, new_content: list[str]):
