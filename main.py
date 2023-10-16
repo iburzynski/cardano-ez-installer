@@ -9,10 +9,13 @@ from src.utils import ind, print_success
 from src.config_vars import make_cfg
 from src.dotfiles import update_dotfiles
 from src.paths import make_paths
-from src.node import install_node, download_node_configs
+from src.node import install_node, download_node_configs, prompt_install_ogmios
+
+VERSION = 0.2
 
 
 def install() -> None | NoReturn:
+    print(f"\n** Cardano-EZ-Installer v{VERSION} **")
     # Check if Nix is installed
     try:
         subprocess.check_output(["nix", "--version"])
@@ -31,9 +34,12 @@ def install() -> None | NoReturn:
     paths = make_paths(cfg)
     download_node_configs(paths)
     update_dotfiles(paths)
+    prompt_install_ogmios(cfg)
 
     print_success(ind(
-        f"Installation complete!\n  Run `preprod-node`, `preview-node`, or `main-node` in a new terminal window to start the node.\n"))
+        f"Installation complete!\n"))
+
+    print("Run `preprod-node`, `preview-node`, or `main-node` in a new terminal window to start the node.")
 
 
 install()

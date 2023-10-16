@@ -5,7 +5,7 @@ import tempfile
 from itertools import groupby
 from typing import Generator, NoReturn
 from .paths import Network, NetworkPaths, Paths
-from .utils import ind, print_fail, print_neutral, print_success
+from .utils import ind, print_fail, print_neutral, print_success_generic
 
 # Nix daemon failsafe for MacOS users
 daemon_path = "'/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'"
@@ -42,15 +42,16 @@ def overwrite_dotfile_safely(
         shutil.copy2(dotfile_path, backup_path)
         with open(dotfile_path, 'w') as dotfile:
             dotfile.writelines(remove_excess_newlines(new_content))
+        print_success_generic()
 
-    except Exception as e:
+    except:
         print_fail(
             f'\n{ind(f"An error occurred updating {dotfile_path}: restoring original file.")}\n')
         shutil.copy2(backup_path, dotfile_path)
-        raise e
 
     finally:
         shutil.rmtree(temp_dir)
+        # sys.exit(1) # exit here?
 
 
 def update_dotfiles(paths: Paths) -> None | NoReturn:
@@ -82,16 +83,17 @@ def update_dotfiles(paths: Paths) -> None | NoReturn:
     def is_alias_or_socket_path(line: str) -> bool:
         is_alias = any(line.startswith(prefix) for prefix, _ in alias_chunks)
         is_socket_path = line.startswith("export CARDANO_NODE_SOCKET_PATH")
+
         return is_alias or is_socket_path
 
     for dotfile in dotfiles:
         file_path = os.path.expanduser(f"~/{dotfile}")
         if not os.path.exists(file_path):
-            print_neutral(ind(f"> Creating '{file_path}' file..."))
+            print_neutral(ind(f"Creating '{file_path}' file..."))
             open(file_path, 'a').close()
 
         print_neutral(ind(
-            f"> Adding {'Nix daemon failsafe,' if is_darwin else ''} socket variable and aliases to '{file_path}'"))
+            f"Adding {'Nix daemon failsafe, ' if is_darwin else ''}socket variable and aliases to '{file_path}'"))
 
         with open(file_path, 'r') as f:
             lines = f.readlines()
@@ -112,5 +114,3 @@ def update_dotfiles(paths: Paths) -> None | NoReturn:
 
         overwrite_dotfile_safely(
             file_path, darwin_content if is_darwin else linux_content)
-
-        print_success(ind(f"> {dotfile}: SUCCESS\n"))
