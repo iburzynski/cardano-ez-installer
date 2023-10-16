@@ -1,6 +1,6 @@
 # **Cardano EZ-Installer**
 
-A quick and easy way to install `cardano-node` and `cardano-cli` using Nix.
+A quick and easy way to install `cardano-node`, `cardano-cli`, and `ogmios` using Nix.
 
 ## **Installation**
 
@@ -75,7 +75,7 @@ A quick and easy way to install `cardano-node` and `cardano-cli` using Nix.
 
 - Open a terminal window and enter the `cardano-ez-installer` directory.
 - Run `./install.sh` to start the installation.
-- The installation may take a long time, especially with a fresh install, so be patient! The EZ-Installer doesn't display output information while `cardano-node` and `cardano-cli` are building, to make the installation process easier to follow. If the installer is taking a while on a particular step but you don't see any errors, assume that the installation is proceeding successfully.
+- The installation may take a long time, especially with a fresh install, so be patient! If the installer is taking a while on a particular step but you don't see any errors, assume that the installation is proceeding successfully.
 - If you encounter any errors during the installation process, return to the `README` and follow the instructions to resolve them. Then run `./install.sh` again.
 
 5. **Start your node**
@@ -158,11 +158,16 @@ If you don't want to use the Guru, you can follow the instructions below to use 
   >**NOTE:** when you're finished, remember to close the node connection by typing `CTRL + c` in the terminal session where it's running. 
 
 ***
-## **Updating `cardano-node` and `cardano-cli`**
+## **Updating `cardano-node`, `cardano-cli`, and `ogmios`**
 
-Updating `cardano-node` and `cardano-cli` is simple:
+Updating `cardano-node`, `cardano-cli`, and `ogmios` is simple.
 
+### **To update `cardano-node` and `cardano-cli`:**
 - Change the version number for the `NODE_RELEASE` variable in `.env`.
+- Run `./install.sh` to update.
+
+### **To update `ogmios`:**
+- Change the version number for the `OGMIOS_RELEASE` variable in `.env`.
 - Run `./install.sh` to update.
 
 ***
@@ -170,23 +175,3 @@ Updating `cardano-node` and `cardano-cli` is simple:
 
 #### **This section is under construction...**
 Additional issues and solutions will be documented here as they're encountered during public testing.
-
-**Nix stops working after updating Mac OS**  
-Nix installation on Macs appends a code snippet to `/etc/zshrc` and `/etc/bashrc`, which is required for Nix to work properly with `zsh` and `bash` shells. Unfortunately one or both of these additions may be erased after updating your Mac.
-
-This will break:
- * all Nix commands
- * any Jambhala commands that use Nix under the hood
- * if you installed `cardano-node`/`cardano-cli` using Nix (i.e. via **Cardano EZ-Installer**), the `cardano-node`/`cardano-cli` commands and associated aliases to start the node
-
-To resolve the issue, edit `/etc/zshrc` and `/etc/bashrc`, adding the following snippet to the bottom of each file if it's missing:
-
-```sh
-# Nix
-if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-  . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-fi
-# End Nix
-```
-
->**NOTE:** you must restart the shell for the changes to take effect.
