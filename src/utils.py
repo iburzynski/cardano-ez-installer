@@ -6,7 +6,7 @@ from datetime import datetime
 def run(cmd: list[str], err: str) -> None:
     result = subprocess.run(cmd)
     if result.returncode != 0:
-        print_fail(ind2(f"{err}: {result.stderr.decode().strip()}"))
+        print_fail(ind2(err))
         sys.exit(1)
 
 
