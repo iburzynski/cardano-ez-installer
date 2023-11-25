@@ -61,10 +61,10 @@ def install_node(cfg: ConfigVars) -> None | NoReturn:
 
 def prompt_install_ogmios(cfg: ConfigVars) -> None | NoReturn:
     while True:
-        user_input = input("Do you want to install Ogmios? (Y/N): ").lower()
+        user_input = input("Do you want to install Ogmios? (Y/n): ").lower()
         print("")
 
-        if user_input == 'y':
+        if user_input == 'y' or user_input == '':
             install_ogmios(cfg)
             break
         elif user_input == 'n':
