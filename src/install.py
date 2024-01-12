@@ -14,7 +14,7 @@ def install_node(cfg: ConfigVars) -> None | NoReturn:
     os.chdir(cfg['CARDANO_SRC_PATH'])
 
     if not os.path.exists("cardano-node"):
-        run_quiet(
+        run(
             ["git", "clone", "https://github.com/input-output-hk/cardano-node"],
             "Error cloning cardano-node repository")
         os.chdir("cardano-node")
@@ -59,6 +59,55 @@ def install_node(cfg: ConfigVars) -> None | NoReturn:
     os.chdir(original_cwd)
 
 
+def prompt_install_aiken(cfg: ConfigVars) -> None | NoReturn:
+    while True:
+        user_input = input("Do you want to install Aiken? (Y/n): ").lower()
+        print("")
+
+        if user_input == 'y' or user_input == '':
+            install_aiken(cfg)
+            break
+        elif user_input == 'n':
+            break
+        else:
+            print("Invalid response. Please enter 'Y' to install or 'N' to cancel.")
+            continue
+
+
+def install_aiken(cfg: ConfigVars) -> None | NoReturn:
+    original_cwd = os.getcwd()
+    aiken_src_path = f"{cfg['CARDANO_SRC_PATH']}/aiken"
+    print_neutral(ind('Installing Aiken...'))
+
+    if not os.path.exists(aiken_src_path):
+        os.chdir(cfg['CARDANO_SRC_PATH'])
+        run(
+            ["git", "clone", "https://github.com/aiken-lang/aiken"],
+            "Error cloning aiken repository")
+        os.chdir(aiken_src_path)
+    else:
+        os.chdir(aiken_src_path)
+        run_quiet(
+            ["git", "fetch"],
+            "Error fetching Aiken repository")
+
+    release = f"v{cfg['AIKEN_RELEASE']}"
+
+    run_quiet(
+        ["git", "reset", "--hard", release],
+        f"Error resetting git to release {release}")
+
+    run_quiet(
+        ["nix", "profile", "remove", ".*aiken*"],
+        "Error removing aiken from nix profile")
+    run(
+        ["nix", "profile", "install", ".#aiken"],
+        "Error installing Aiken")
+
+    print_success_generic()
+    os.chdir(original_cwd)
+
+
 def prompt_install_ogmios(cfg: ConfigVars) -> None | NoReturn:
     while True:
         user_input = input("Do you want to install Ogmios? (Y/n): ").lower()
@@ -77,19 +126,19 @@ def prompt_install_ogmios(cfg: ConfigVars) -> None | NoReturn:
 def install_ogmios(cfg: ConfigVars) -> None | NoReturn:
     original_cwd = os.getcwd()
     ogmios_src_path = f"{cfg['CARDANO_SRC_PATH']}/ogmios"
-    print_neutral(ind('Installing ogmios...'))
+    print_neutral(ind('Installing Ogmios...'))
 
     if not os.path.exists(ogmios_src_path):
         os.chdir(cfg['CARDANO_SRC_PATH'])
-        run_quiet(
+        run(
             ["git", "clone", "https://github.com/CardanoSolutions/ogmios"],
-            "Error cloning ogmios repository")
+            "Error cloning Ogmios repository")
         os.chdir(ogmios_src_path)
     else:
         os.chdir(ogmios_src_path)
         run_quiet(
             ["git", "fetch"],
-            "Error fetching ogmios repository")
+            "Error fetching Ogmios repository")
 
     release = f"v{cfg['OGMIOS_RELEASE']}"
 
@@ -116,11 +165,11 @@ def install_ogmios(cfg: ConfigVars) -> None | NoReturn:
     os.chdir(ogmios_src_path)
     run_quiet(
         ["git", "add", "."],
-        f"Error staging ogmios changes")
+        f"Error staging Ogmios changes")
 
     run_quiet(
         ["git", "add", "-f", "server/cabal.project.local"],
-        f"Error staging ogmios cabal.project.local file")
+        f"Error staging Ogmios cabal.project.local file")
 
     os.chdir(ogmios_server_path)
 
@@ -130,11 +179,11 @@ def install_ogmios(cfg: ConfigVars) -> None | NoReturn:
 
     run_quiet(
         ["nix", "profile", "remove", ".*ogmios*"],
-        "Error removing ogmios from nix profile")
+        "Error removing Ogmios from nix profile")
     run(
         ["nix", "profile", "install", "--accept-flake-config",
          "--no-warn-dirty", ".#ogmios"],
-        "Error installing ogmios")
+        "Error installing Ogmios")
 
     print_success_generic()
     os.chdir(original_cwd)
