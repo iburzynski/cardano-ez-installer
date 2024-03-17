@@ -29,9 +29,12 @@ def install_node(cfg: ConfigVars) -> None | NoReturn:
         f"Error resetting git to release {cfg['NODE_RELEASE']}")
 
     run_quiet(
-        ["nix", "profile", "remove", ".*cardano-node*"],
+        ["nix", "profile", "remove", "cardano-node"],
         "Error removing cardano-node from nix profile")
-    run(
+    run_quiet(
+        ["nix", "profile", "remove", "*.cardano-node*"],
+        "Error removing cardano-node from nix profile")
+    run_quiet(
         ["nix", "profile", "install", "--accept-flake-config",
          "--extra-substituters", "https://cache.zw3rk.com",
          "--extra-trusted-public-keys",
@@ -44,9 +47,12 @@ def install_node(cfg: ConfigVars) -> None | NoReturn:
     print_neutral(ind("Installing cardano-cli..."))
 
     run_quiet(
-        ["nix", "profile", "remove", ".*cardano-cli*"],
+        ["nix", "profile", "remove", "cardano-cli"],
         "Error removing cardano-cli from nix profile")
-    run(
+    run_quiet(
+        ["nix", "profile", "remove", "*.cardano-cli*"],
+        "Error removing cardano-cli from nix profile")
+    run_quiet(
         ["nix", "profile", "install", "--accept-flake-config",
          "--extra-substituters", "https://cache.zw3rk.com",
          "--extra-trusted-public-keys",
