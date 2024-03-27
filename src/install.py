@@ -32,7 +32,7 @@ def install_node(cfg: ConfigVars) -> None | NoReturn:
         ["nix", "profile", "remove", "cardano-node"],
         "Error removing cardano-node from nix profile")
     run_quiet(
-        ["nix", "profile", "remove", "*.cardano-node*"],
+        ["nix", "profile", "remove", ".*cardano-node*"],
         "Error removing cardano-node from nix profile")
     run_quiet(
         ["nix", "profile", "install", "--accept-flake-config",
@@ -50,7 +50,7 @@ def install_node(cfg: ConfigVars) -> None | NoReturn:
         ["nix", "profile", "remove", "cardano-cli"],
         "Error removing cardano-cli from nix profile")
     run_quiet(
-        ["nix", "profile", "remove", "*.cardano-cli*"],
+        ["nix", "profile", "remove", ".*cardano-cli*"],
         "Error removing cardano-cli from nix profile")
     run_quiet(
         ["nix", "profile", "install", "--accept-flake-config",
@@ -102,7 +102,9 @@ def install_aiken(cfg: ConfigVars) -> None | NoReturn:
     run_quiet(
         ["git", "reset", "--hard", release],
         f"Error resetting git to release {release}")
-
+    run_quiet(
+        ["nix", "profile", "remove", "aiken"],
+        "Error removing aiken from nix profile")
     run_quiet(
         ["nix", "profile", "remove", ".*aiken*"],
         "Error removing aiken from nix profile")
@@ -182,7 +184,9 @@ def install_ogmios(cfg: ConfigVars) -> None | NoReturn:
     run_quiet(
         ["nix", "flake", "lock"],
         f"Error creating flake.lock file")
-
+    run_quiet(
+        ["nix", "profile", "remove", "server"],
+        "Error removing Ogmios from nix profile")
     run_quiet(
         ["nix", "profile", "remove", ".*ogmios*"],
         "Error removing Ogmios from nix profile")
